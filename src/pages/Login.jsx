@@ -28,7 +28,7 @@ export default function Login() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <h1 className="auth-title">Singlife Student Portal</h1>
+        <h1 className="auth-title">Student Portal</h1>
         <p className="auth-subtitle">Sign in to continue</p>
 
         <form onSubmit={handleSubmit} noValidate>
