@@ -8,6 +8,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [automationLoading, setAutomationLoading] = useState(false);
+  const [automationError, setAutomationError] = useState("");
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -22,6 +24,23 @@ export default function Login() {
       navigate("/home", { replace: true });
     } else {
       setError("Invalid username or password");
+    }
+  }
+
+  // Standalone trigger for the Selenium automation pack - independent of login.
+  async function handleRunAutomation() {
+    setAutomationLoading(true);
+    setAutomationError("");
+    try {
+      const res = await fetch("/api/trigger-tests", { method: "POST" });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to trigger automation pack");
+      }
+      navigate(`/automation-status/${data.runTag}`);
+    } catch (err) {
+      setAutomationError(err.message);
+      setAutomationLoading(false);
     }
   }
 
@@ -78,6 +97,18 @@ export default function Login() {
             Log In
           </button>
         </form>
+
+        <div className="automation-divider" />
+        <p className="automation-hint">Want to test the pipeline without logging in?</p>
+        <button
+          type="button"
+          className="btn-secondary"
+          onClick={handleRunAutomation}
+          disabled={automationLoading}
+        >
+          {automationLoading ? "Starting..." : "Run Automation Pack"}
+        </button>
+        {automationError && <p className="error-text">{automationError}</p>}
       </div>
     </div>
   );
