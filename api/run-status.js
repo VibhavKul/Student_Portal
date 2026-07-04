@@ -35,13 +35,20 @@ export default async function handler(req, res) {
     }
 
     const runsData = await runsResponse.json();
-    // GitHub can take a few seconds to register a new run, so the automation
-    // repo's workflow must set the run name to the run_tag for this match to work.
-    const match = (runsData.workflow_runs || []).find(
-      (run) => run.name === runTag || run.display_title === runTag
+    const runs = runsData.workflow_runs || [];
+    // `name` is the static workflow name (same for every run) and never contains
+    // the run_tag - only `display_title` (set via the workflow's `run-name:`)
+    // carries it, and it's wrapped in extra text (e.g. "UI-triggered: <tag>"),
+    // so this has to be a substring match, not strict equality.
+    const match = runs.find(
+      (run) => typeof run.display_title === "string" && run.display_title.includes(runTag)
     );
 
     if (!match) {
+      console.log(
+        `run-status: no match for runTag="${runTag}". Recent display_title values:`,
+        runs.slice(0, 5).map((run) => run.display_title)
+      );
       return res.status(200).json({ status: "pending" });
     }
 
