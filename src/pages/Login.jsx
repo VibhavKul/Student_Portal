@@ -10,6 +10,7 @@ export default function Login() {
   const [error, setError] = useState("");
   const [automationLoading, setAutomationLoading] = useState(false);
   const [automationError, setAutomationError] = useState("");
+  const [showForgotPassword, setShowForgotPassword] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -96,7 +97,30 @@ export default function Login() {
           <button type="submit" className="btn-primary" disabled={!canSubmit}>
             Log In
           </button>
+
+          <button
+            type="button"
+            className="forgot-password-link"
+            onClick={() => setShowForgotPassword(true)}
+          >
+            Forgot Password?
+          </button>
         </form>
+
+        {showForgotPassword && (
+          <div className="modal-overlay" role="presentation">
+            <div className="modal-dialog" role="dialog" aria-modal="true">
+              <p className="modal-message">The functionality is not yet implemented...!</p>
+              <button
+                type="button"
+                className="btn-primary"
+                onClick={() => setShowForgotPassword(false)}
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="automation-divider" />
         <p className="automation-hint">Want to test the pipeline without logging in?</p>
