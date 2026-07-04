@@ -1,5 +1,82 @@
+import AdmZip from "adm-zip";
+
 const AUTOMATION_REPO = "VibhavKul/Student_Portal_Automation";
 const WORKFLOW_FILE = "selenium-tests.yml";
+const ARTIFACT_NAME = "extent-report";
+
+// Downloads the run's artifact zip and counts real scenario/step results from
+// the Cucumber JSON report inside target/cucumber-reports/*.json - the GitHub
+// Jobs API only has pipeline step names (checkout, setup JDK, etc), not test
+// results, so it can't answer "how many scenarios passed".
+async function fetchCucumberResults(headers, runIdValue) {
+  const artifactsResponse = await fetch(
+    `https://api.github.com/repos/${AUTOMATION_REPO}/actions/runs/${runIdValue}/artifacts`,
+    { headers }
+  );
+  if (!artifactsResponse.ok) return null;
+
+  const artifactsData = await artifactsResponse.json();
+  const artifact = (artifactsData.artifacts || []).find((a) => a.name === ARTIFACT_NAME);
+  if (!artifact) return null;
+
+  const zipResponse = await fetch(artifact.archive_download_url, { headers });
+  if (!zipResponse.ok) return null;
+
+  const zipBuffer = Buffer.from(await zipResponse.arrayBuffer());
+  const zip = new AdmZip(zipBuffer);
+  const jsonEntries = zip
+    .getEntries()
+    .filter(
+      (entry) =>
+        !entry.isDirectory &&
+        entry.entryName.toLowerCase().includes("cucumber-reports") &&
+        entry.entryName.toLowerCase().endsWith(".json")
+    );
+
+  if (jsonEntries.length === 0) return null;
+
+  let scenariosPassed = 0;
+  let scenariosFailed = 0;
+  let scenariosTotal = 0;
+  let stepsPassed = 0;
+  let stepsFailed = 0;
+  let stepsTotal = 0;
+
+  for (const entry of jsonEntries) {
+    let features;
+    try {
+      features = JSON.parse(entry.getData().toString("utf8"));
+    } catch {
+      continue;
+    }
+    if (!Array.isArray(features)) continue;
+
+    for (const feature of features) {
+      for (const element of feature.elements || []) {
+        if (element.type && element.type !== "scenario") continue;
+
+        const stepStatuses = (element.steps || []).map((s) => s.result?.status);
+        stepsTotal += stepStatuses.length;
+        stepsPassed += stepStatuses.filter((s) => s === "passed").length;
+        stepsFailed += stepStatuses.filter((s) => s === "failed").length;
+
+        scenariosTotal += 1;
+        if (stepStatuses.length > 0 && stepStatuses.every((s) => s === "passed")) {
+          scenariosPassed += 1;
+        } else if (stepStatuses.some((s) => s === "failed")) {
+          scenariosFailed += 1;
+        }
+      }
+    }
+  }
+
+  if (scenariosTotal === 0) return null;
+
+  return {
+    scenarios: { passed: scenariosPassed, failed: scenariosFailed, total: scenariosTotal },
+    steps: { passed: stepsPassed, failed: stepsFailed, total: stepsTotal },
+  };
+}
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -73,11 +150,27 @@ export default async function handler(req, res) {
       }))
     );
 
+    // Only pull the real Cucumber results once the run is done - this is the
+    // one poll where we do the extra artifact download, since the frontend
+    // stops polling as soon as it sees "completed".
+    let testResults = null;
+    if (match.status === "completed") {
+      try {
+        testResults = await fetchCucumberResults(headers, match.id);
+      } catch (err) {
+        console.log(
+          `run-status: failed to fetch/parse cucumber results for run ${match.id}:`,
+          err.message
+        );
+      }
+    }
+
     return res.status(200).json({
       status: match.status,
       conclusion: match.conclusion,
       steps,
       runId: match.id,
+      testResults,
     });
   } catch (err) {
     return res.status(500).json({ error: err.message });

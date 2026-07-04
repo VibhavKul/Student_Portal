@@ -35,6 +35,7 @@ export default function AutomationStatus() {
   const [status, setStatus] = useState("pending");
   const [conclusion, setConclusion] = useState(null);
   const [steps, setSteps] = useState([]);
+  const [testResults, setTestResults] = useState(null);
   const [runId, setRunId] = useState(null);
   const [error, setError] = useState("");
   const [pendingAttempts, setPendingAttempts] = useState(0);
@@ -60,6 +61,7 @@ export default function AutomationStatus() {
       setStatus(data.status);
       setConclusion(data.conclusion ?? null);
       setSteps(data.steps || []);
+      setTestResults(data.testResults ?? null);
       setRunId(data.runId ?? null);
 
       if (data.status === "completed" && intervalRef.current) {
@@ -112,9 +114,6 @@ export default function AutomationStatus() {
     }
     poll();
   }
-
-  const passCount = steps.filter((s) => s.conclusion === "success").length;
-  const failCount = steps.filter((s) => s.conclusion === "failure").length;
 
   const bannerClass = [
     "status-banner",
@@ -170,10 +169,17 @@ export default function AutomationStatus() {
               <p className={`summary-result ${conclusion === "success" ? "success" : "failure"}`}>
                 Overall result: {conclusion === "success" ? "Success" : "Failure"}
               </p>
-              {passCount + failCount > 0 && (
-                <p className="summary-counts">
-                  {passCount} passed / {failCount} failed
-                </p>
+              {testResults ? (
+                <>
+                  <p className="summary-counts">
+                    Scenarios: {testResults.scenarios.passed} passed, {testResults.scenarios.failed} failed
+                  </p>
+                  <p className="summary-counts">
+                    Steps: {testResults.steps.passed} passed, {testResults.steps.failed} failed
+                  </p>
+                </>
+              ) : (
+                <p className="summary-counts">Test result counts unavailable for this run.</p>
               )}
               <div className="summary-actions">
                 <button
@@ -189,7 +195,7 @@ export default function AutomationStatus() {
                   className="btn-secondary"
                   onClick={() => navigate("/login")}
                 >
-                  Run Again
+                  Back to Login
                 </button>
               </div>
             </div>
