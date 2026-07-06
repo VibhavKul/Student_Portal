@@ -6,6 +6,7 @@ import "../styles/Home.css";
 
 const EMPTY_FORM = {
   fullName: "",
+  fatherName: "",
   studentId: "",
   dob: "",
   email: "",
@@ -17,11 +18,23 @@ const EMPTY_FORM = {
 
 const YEAR_OPTIONS = ["1st", "2nd", "3rd", "4th"];
 
+const NAME_REGEX = /^[A-Za-z\s]+$/;
+
+// Shared validation for name-like fields: required, alphabetic characters and spaces only.
+function validateNameField(value, label) {
+  if (!value.trim()) return `${label} is required`;
+  return NAME_REGEX.test(value)
+    ? ""
+    : `${label} can only contain alphabetic characters and spaces`;
+}
+
 // Validates a single field and returns an error message, or "" if valid.
 function validateField(name, value) {
   switch (name) {
     case "fullName":
-      return value.trim() ? "" : "Full name is required";
+      return validateNameField(value, "Full name");
+    case "fatherName":
+      return validateNameField(value, "Father's name");
     case "studentId":
       return value.trim() ? "" : "Student ID is required";
     case "dob":
@@ -70,6 +83,7 @@ export default function Home() {
   // Required fields must all be non-empty and error-free before Submit is enabled.
   const requiredFields = [
     "fullName",
+    "fatherName",
     "studentId",
     "dob",
     "email",
@@ -104,7 +118,7 @@ export default function Home() {
         <div className="form-card">
           <h2 className="section-title">Student Details</h2>
           <form onSubmit={handleSubmit} noValidate className="details-form">
-            <div className="form-field">
+            <div className="form-field form-field-full">
               <label htmlFor="fullName">Full Name</label>
               <input
                 id="fullName"
@@ -113,9 +127,26 @@ export default function Home() {
                 value={form.fullName}
                 onChange={handleChange}
                 onBlur={handleBlur}
+                data-testid="full-name-input"
               />
               {touched.fullName && errors.fullName && (
                 <p className="error-text">{errors.fullName}</p>
+              )}
+            </div>
+
+            <div className="form-field form-field-full">
+              <label htmlFor="fatherName">Father's Name</label>
+              <input
+                id="fatherName"
+                name="fatherName"
+                type="text"
+                value={form.fatherName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                data-testid="father-name-input"
+              />
+              {touched.fatherName && errors.fatherName && (
+                <p className="error-text">{errors.fatherName}</p>
               )}
             </div>
 

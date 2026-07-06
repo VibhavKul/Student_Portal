@@ -5,6 +5,7 @@ import "../styles/Details.css";
 
 const FIELD_LABELS = [
   ["fullName", "Full Name"],
+  ["fatherName", "Father's Name", "father-name-display"],
   ["studentId", "Student ID"],
   ["dob", "Date of Birth"],
   ["email", "Email"],
@@ -31,10 +32,12 @@ export default function Details() {
           <h2 className="section-title">Welcome, {details.fullName}</h2>
 
           <dl className="details-list">
-            {FIELD_LABELS.map(([key, label]) => (
+            {FIELD_LABELS.map(([key, label, testId]) => (
               <div className="details-row" key={key}>
                 <dt>{label}</dt>
-                <dd>{details[key] || "—"}</dd>
+                <dd {...(testId ? { "data-testid": testId } : {})}>
+                  {details[key] || "—"}
+                </dd>
               </div>
             ))}
           </dl>
