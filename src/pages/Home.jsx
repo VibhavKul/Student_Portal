@@ -7,6 +7,7 @@ import "../styles/Home.css";
 const EMPTY_FORM = {
   fullName: "",
   fatherName: "",
+  motherMaidenName: "",
   studentId: "",
   dob: "",
   email: "",
@@ -35,6 +36,8 @@ function validateField(name, value) {
       return validateNameField(value, "Full name");
     case "fatherName":
       return validateNameField(value, "Father's name");
+    case "motherMaidenName":
+      return validateNameField(value, "Mother's maiden name");
     case "studentId":
       return value.trim() ? "" : "Student ID is required";
     case "dob":
@@ -84,6 +87,7 @@ export default function Home() {
   const requiredFields = [
     "fullName",
     "fatherName",
+    "motherMaidenName",
     "studentId",
     "dob",
     "email",
@@ -147,6 +151,22 @@ export default function Home() {
               />
               {touched.fatherName && errors.fatherName && (
                 <p className="error-text">{errors.fatherName}</p>
+              )}
+            </div>
+
+            <div className="form-field form-field-full">
+              <label htmlFor="motherMaidenName">Mother's Maiden Name</label>
+              <input
+                id="motherMaidenName"
+                name="motherMaidenName"
+                type="text"
+                value={form.motherMaidenName}
+                onChange={handleChange}
+                onBlur={handleBlur}
+                data-testid="mother-maiden-name-input"
+              />
+              {touched.motherMaidenName && errors.motherMaidenName && (
+                <p className="error-text">{errors.motherMaidenName}</p>
               )}
             </div>
 

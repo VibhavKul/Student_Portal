@@ -6,6 +6,7 @@ import "../styles/Details.css";
 const FIELD_LABELS = [
   ["fullName", "Full Name"],
   ["fatherName", "Father's Name", "father-name-display"],
+  ["motherMaidenName", "Mother's Maiden Name", "mother-maiden-name-display"],
   ["studentId", "Student ID"],
   ["dob", "Date of Birth"],
   ["email", "Email"],
