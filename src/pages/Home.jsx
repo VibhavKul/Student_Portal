@@ -19,6 +19,19 @@ const EMPTY_FORM = {
 
 const YEAR_OPTIONS = ["1st", "2nd", "3rd", "4th"];
 
+const COURSE_OPTIONS = [
+  "Computer Science",
+  "Information Technology",
+  "Electronics & Communication",
+  "Mechanical Engineering",
+  "Civil Engineering",
+  "Business Administration",
+  "Commerce",
+  "Biotechnology",
+  "Mathematics",
+  "Physics",
+];
+
 const NAME_REGEX = /^[A-Za-z\s]+$/;
 
 // Shared validation for name-like fields: required, alphabetic characters and spaces only.
@@ -51,7 +64,7 @@ function validateField(name, value) {
       if (!value.trim()) return "Phone number is required";
       return /^\d{10}$/.test(value) ? "" : "Enter a valid 10-digit phone number";
     case "course":
-      return value.trim() ? "" : "Course / Program is required";
+      return value ? "" : "Course / Program is required";
     case "year":
       return value ? "" : "Year / Semester is required";
     default:
@@ -234,15 +247,23 @@ export default function Home() {
 
             <div className="form-field">
               <label htmlFor="course">Course / Program</label>
-              <input
+              <select
                 id="course"
                 name="course"
-                type="text"
                 value={form.course}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                placeholder="e.g. B.Sc Computer Science"
-              />
+                data-testid="course-program-select"
+              >
+                <option value="" disabled>
+                  -- Select Course/Program --
+                </option>
+                {COURSE_OPTIONS.map((c) => (
+                  <option key={c} value={c}>
+                    {c}
+                  </option>
+                ))}
+              </select>
               {touched.course && errors.course && (
                 <p className="error-text">{errors.course}</p>
               )}
