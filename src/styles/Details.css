@@ -34,6 +34,21 @@
   word-break: break-word;
 }
 
+.review-hint {
+  color: var(--color-text-muted);
+  font-size: 14px;
+  margin: -12px 0 0;
+}
+
+.review-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.review-actions button {
+  flex: 1;
+}
+
 @media (max-width: 640px) {
   .details-card {
     padding: 24px 20px;
@@ -47,5 +62,9 @@
   .details-row dd {
     text-align: left;
     max-width: 100%;
+  }
+
+  .review-actions {
+    flex-direction: column;
   }
 }

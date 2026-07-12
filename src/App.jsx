@@ -3,6 +3,7 @@ import { AuthProvider } from "./context/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
+import Review from "./pages/Review";
 import Details from "./pages/Details";
 import AutomationStatus from "./pages/AutomationStatus";
 
@@ -20,6 +21,14 @@ export default function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/review"
+            element={
+              <ProtectedRoute requirePending>
+                <Review />
               </ProtectedRoute>
             }
           />

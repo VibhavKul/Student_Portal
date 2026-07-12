@@ -69,6 +69,39 @@ placeholder, full option-list verification)
 
 ---
 
+## PBB-803 — Review & Confirm Page
+
+**Date:** 2026-07-13
+**Requirement:** Insert a "Review & Confirm" page between the Student Details form and
+the final Welcome/Details page. Submitting the form no longer finalizes the data
+directly — the user must review a read-only summary and explicitly click "Confirm &
+Submit" first.
+**Implementation notes:** Renamed the Home form's submit button to "Review" (ticket
+allowed either "Submit" or a renamed "Review" button). On valid submit, Home now writes
+to a new sessionStorage key `pendingStudentDetails` (via new `savePendingStudentDetails`/
+`getPendingStudentDetails`/`clearPendingStudentDetails` helpers in utils/storage.js)
+instead of the final `studentDetails` key, then navigates to `/review`. The new
+`Review.jsx` page reads the pending data and shows it as read-only label-value pairs
+(same fields/order as the Details page), reusing `Details.css` styling. "Edit" navigates
+back to `/home` with `state.editData` pre-filled, same pattern as the existing "Edit
+Details" flow on the Details page — pending data is left untouched (not finalized).
+"Confirm & Submit" promotes the pending data to the final `studentDetails` key via the
+existing `saveStudentDetails`, clears the pending key, and navigates to `/details` (same
+end result as the old direct-submit behavior). Added a new `requirePending` prop to
+`ProtectedRoute` so `/review` isn't directly reachable without pending data in the
+current session; `/details`'s existing `requireDetails` guard already prevents reaching
+it without having gone through Confirm & Submit, since Home no longer writes the final
+key itself.
+**data-testid values:** `review-button` (Home's submit/review button, previously
+untested), `review-edit-button`, `review-confirm-button`, and per-field review displays:
+`full-name-review-display`, `father-name-review-display`,
+`mother-maiden-name-review-display`, `student-id-review-display`, `dob-review-display`,
+`email-review-display`, `phone-review-display`, `course-program-review-display`,
+`year-review-display`, `address-review-display`.
+**Status:** ✅ Done — awaiting tests
+
+---
+
 ## Tooling / Infrastructure Milestones (not features, but relevant history)
 
 - **CLAUDE.md** added — enforces commit-directly-to-main policy after Claude Code

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import TopBar from "../components/TopBar";
-import { saveStudentDetails } from "../utils/storage";
+import { savePendingStudentDetails } from "../utils/storage";
 import "../styles/Home.css";
 
 const EMPTY_FORM = {
@@ -124,8 +124,10 @@ export default function Home() {
 
     if (requiredFields.some((field) => newErrors[field])) return;
 
-    saveStudentDetails(form);
-    navigate("/details");
+    // Values aren't finalized yet — they're held as "pending" until the user
+    // explicitly confirms them on the Review & Confirm page.
+    savePendingStudentDetails(form);
+    navigate("/review");
   }
 
   return (
@@ -305,8 +307,9 @@ export default function Home() {
               type="submit"
               className="btn-primary form-field-full"
               disabled={!isFormValid}
+              data-testid="review-button"
             >
-              Submit
+              Review
             </button>
           </form>
         </div>
