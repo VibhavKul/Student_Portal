@@ -14,6 +14,7 @@ dist-ssr
 
 .claude/*
 !.claude/agents/
+!.claude/commands/
 
 # Editor directories and files
 .vscode/*
