@@ -116,6 +116,20 @@ untested), `review-edit-button`, `review-confirm-button`, and per-field review d
 
 ---
 
+## PBB-999 — Rename Login Page Title to "Student Portal"
+
+**Date:** 2026-07-12
+**Requirement:** Given the user is on the login page, the display name "Student Portal"
+(instead of "Vibhav Student Portal") should be displayed.
+**Implementation notes:** Static text change to the `<h1 className="auth-title">` in
+Login.jsx. index.html's `<title>` already said "Student Portal", so no change there.
+Added a data-testid to the title so automation can locate it (the heading previously had
+none).
+**data-testid values:** `login-title-display`
+**Status:** Done — awaiting tests
+
+---
+
 ## Template for New Entries
 
 ```
