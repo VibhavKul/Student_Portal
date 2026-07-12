@@ -8,7 +8,7 @@
 
 ## Initial Build
 
-**Date:** (fill in)
+**Date:** 2026-07-02
 **What:** Core application scaffolded — React + Vite, React Router, login page
 (hardcoded credentials: `vibhav.kul` / `password`), Student Details form, Details/Welcome
 page. Deployed to Vercel with SPA rewrite rule (`vercel.json`) to fix client-side routing.
@@ -19,20 +19,21 @@ page. Deployed to Vercel with SPA rewrite rule (`vercel.json`) to fix client-sid
 
 ## PBB-786 — Forgot Password Link
 
-**Date:** (fill in)
+**Date:** 2026-07-05
 **Requirement:** "Forgot Password" link on login page, under login button. On click,
 shows a popup: "The functionality is not yet implemented...!" with an OK button that
 closes it.
 **Implementation notes:** Popup component pattern established here — reused for future
 not-implemented features.
-**data-testid values:** (fill in if known)
+**data-testid values:** none — this feature predates the data-testid convention; the
+popup and link have no testids (Selenium locates them by text/class).
 **Status:** ✅ Done — tested (see Student_Portal_Automation STORY_LOG)
 
 ---
 
 ## PBB-800 — Father's Name Field
 
-**Date:** (fill in)
+**Date:** 2026-07-06
 **Requirement:** New required text field "Father's Name" under "Full Name" on the
 Student Details form. Value flows through to the Details/Welcome page.
 **Implementation notes:** Same validation pattern as Full Name (alphabetic + spaces,
@@ -44,7 +45,7 @@ required). Added to sessionStorage `studentDetails` object and Edit Details pre-
 
 ## PBB-801 — Mother's Maiden Name Field
 
-**Date:** (fill in)
+**Date:** 2026-07-09
 **Requirement:** New required text field "Mother's Maiden Name" under "Father's Name."
 Value flows through to the Details/Welcome page.
 **Implementation notes:** Same pattern as Father's Name (PBB-800).
@@ -55,7 +56,7 @@ Value flows through to the Details/Welcome page.
 
 ## PBB-802 — Course/Program Dropdown
 
-**Date:** (fill in)
+**Date:** 2026-07-10
 **Requirement:** Replace the "Course / Program" free-text field with a predefined
 dropdown of ~10 courses. Selected value flows through to the Details/Welcome page.
 **Implementation notes:** Used a disabled placeholder option ("-- Select Course/Program --")
@@ -63,7 +64,8 @@ so the field starts unselected. Preserved existing sessionStorage key so nothing
 reading it broke. Options: Computer Science, Information Technology, Electronics &
 Communication, Mechanical Engineering, Civil Engineering, Business Administration,
 Commerce, Biotechnology, Mathematics, Physics.
-**data-testid values:** `course-program-select` (or existing testid — confirm)
+**data-testid values:** `course-program-select` (confirmed — newly added; the field had
+no testid before this ticket)
 **Status:** ✅ Done — tested (3 scenarios: selection display, blocked submission on
 placeholder, full option-list verification)
 
