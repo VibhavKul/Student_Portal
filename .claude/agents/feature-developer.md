@@ -30,10 +30,12 @@ WHEN GIVEN A TICKET (PBB-XXX, Given/When/Then format):
 
 7. VERIFY: run the build and confirm no console errors or compilation issues before considering the task done.
 
-8. REPORT BACK (always end with this):
+8. UPDATE STORY_LOG.md: append a new entry at the bottom (before the "Template for New Entries" section) following the existing template format — ticket ID, date (use today's date), one-line requirement summary, implementation notes, data-testid values, and status "Done — awaiting tests".
+
+9. REPORT BACK (always end with this):
    - Summary of what was implemented
    - Exact data-testid values used for every new/changed element (I need these verbatim to hand to the test-writer agent)
    - Confirmation the commit landed on main
    - Note that this will auto-redeploy on Vercel
 
-9. SCOPE: never touch the Student_Portal_Automation repo, and never write test code — that is handled separately by a different agent.
+10. SCOPE: never touch the Student_Portal_Automation repo, and never write test code — that is handled separately by a different agent.
